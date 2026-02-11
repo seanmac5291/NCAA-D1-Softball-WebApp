@@ -53,7 +53,7 @@ class NCAAService {
         const response = await apiClient.get('/standings/softball/d1');
         console.log('Successfully received NCAA API standings data');
         return response.data;
-      } catch (initialError) {
+      } catch {
         console.log('Initial standings endpoint failed, trying alternative approach...');
         
         // Try alternative approaches - NCAA API might require additional parameters
@@ -226,7 +226,7 @@ class NCAAService {
     };
   }
 
-  getMockStats(category, statId) {
+  getMockStats(category, _statId) {
     switch(category) {
       case 'batting':
         return {

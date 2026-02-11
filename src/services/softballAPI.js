@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-// Determine the API base URL based on Vite's mode
-const API_BASE_URL = import.meta.env.PROD
-  ? '/.netlify/functions/api' // For Netlify production builds
-  : 'http://localhost:5003/api/softball'; // For local development
+// Determine the API base URL based on Vite's mode and env
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD
+  ? '/api' // For Netlify production builds (redirected to the function)
+  : 'http://localhost:5003/api/softball'); // For local development
 
 console.log('Frontend connecting to backend at:', API_BASE_URL);
 // Log Vite environment mode for debugging

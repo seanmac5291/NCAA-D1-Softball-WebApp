@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { fetchTeamRankings, fetchStatLeaders } from './services/softballAPI';
 import TeamRankings from './components/TeamRankings';
@@ -11,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('rankings'); // Default to rankings tab
+  const initialStatCategoryRef = useRef(activeStatCategory);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +31,7 @@ function App() {
 
         // Fetch initial stats data
         try {
-          const initialStatData = await fetchStatLeaders(activeStatCategory);
+          const initialStatData = await fetchStatLeaders(initialStatCategoryRef.current);
           console.log('Stats data received');
           setStatData(initialStatData);
         } catch (statsError) {
@@ -47,7 +48,7 @@ function App() {
     };
 
     fetchData();
-  }, []);
+  }, [activeStatCategory]);
 
   // Handle stat category change
   const handleCategoryChange = async (category) => {

@@ -235,7 +235,7 @@ test.describe('WCAG 2.1 Government Compliance Audit', () => {
     }
     
     // Test for unlabeled form inputs (WCAG 2.1 Success Criterion 1.3.1, 3.3.2)
-    const unlabeledInputs = await page.locator('input:not([aria-label]):not([aria-labelledby])').count();
+    const _unlabeledInputs = await page.locator('input:not([aria-label]):not([aria-labelledby])').count();
     const inputsWithoutLabels = await page.evaluate(() => {
       const inputs = Array.from(document.querySelectorAll('input'));
       return inputs.filter(input => {

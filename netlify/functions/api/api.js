@@ -209,7 +209,7 @@ const ncaaService = new NCAAService();
 /**
  * Netlify serverless function handler
  */
-exports.handler = async (event, context) => {
+exports.handler = async (event, _context) => {
   // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',

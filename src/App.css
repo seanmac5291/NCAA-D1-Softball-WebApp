@@ -6,6 +6,7 @@
   --border-color: rgba(107, 178, 255, 0.5); /* Primary color with alpha for borders */
   --success-color: #5cb85c;
   --danger-color: #d9534f;
+  --danger-rgb: 217, 83, 79;
   --warning-color: #f0ad4e;
   --accent-color: #b388ff; /* Lighter purple accent */
   --background-color: transparent;
@@ -175,9 +176,8 @@ body {
   backdrop-filter: var(--card-backdrop-filter);
   -webkit-backdrop-filter: var(--card-backdrop-filter);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--danger-color);
-  box-shadow: 0 5px 15px rgba(var(--danger-rgb, 217, 83, 79), 0.3); /* Define --danger-rgb if not present */
+  box-shadow: 0 5px 15px rgba(var(--danger-rgb), 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .app-footer {

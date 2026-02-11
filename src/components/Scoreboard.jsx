@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './Scoreboard.css';
 
 const Scoreboard = ({ games, onDateChange }) => {
@@ -12,6 +12,7 @@ const Scoreboard = ({ games, onDateChange }) => {
   // Notify parent on initial load
   useEffect(() => {
     onDateChange(formatDateParam(selectedDate));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDateChange = (e) => {

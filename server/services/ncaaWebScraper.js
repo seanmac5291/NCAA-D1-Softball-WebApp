@@ -1,6 +1,4 @@
 const axios = require('axios');
-const fs = require('fs').promises;
-const path = require('path');
 
 // NCAA API client with proper configuration
 const ncaaApiClient = axios.create({
