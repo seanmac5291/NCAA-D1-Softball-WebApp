@@ -56,10 +56,20 @@ class NCAAWebScraperService {
     try {
       console.log('Fetching rankings from NCAA API');
       const { data } = await ncaaApiClient.get('/rankings/softball/d1');
+      // Normalize each row: trim whitespace from keys, and map TEAM -> COLLEGE
+      const normalized = Array.isArray(data.data) ? data.data.map(item => {
+        const row = {};
+        for (const [k, v] of Object.entries(item)) {
+          row[k.trim()] = v;
+        }
+        // Frontend expects COLLEGE; API now returns TEAM
+        if (!row.COLLEGE && row.TEAM) row.COLLEGE = row.TEAM;
+        return row;
+      }) : [];
       return {
         title: data.title || 'NCAA Division I Softball Rankings',
         updated: data.updated || new Date().toLocaleDateString(),
-        data: Array.isArray(data.data) ? data.data : []
+        data: normalized
       };
     } catch (error) {
       console.error('Error fetching rankings from NCAA API:', error.message);
@@ -153,13 +163,10 @@ class NCAAWebScraperService {
           break;
         }
         case 'slg':
-          value = parseFloat(item.SLG || item.slg) || 0;
-          stats.g    = parseInt(item.G    || item.g)    || 0;
-          stats.ab   = parseInt(item.AB   || item.ab)   || 0;
-          stats.h    = parseInt(item.H    || item.h)    || 0;
-          stats['2b'] = parseInt(item['2B']   || item['2b'])   || 0;
-          stats['3b'] = parseInt(item['3B']   || item['3b'])   || 0;
-          stats.hr   = parseInt(item.HR   || item.hr)   || 0;
+          value = parseFloat(item['SLG PCT'] || item.SLG || item.slg) || 0;
+          stats.g  = parseInt(item.G  || item.g)  || 0;
+          stats.ab = parseInt(item.AB || item.ab) || 0;
+          stats.tb = parseInt(item.TB || item.tb) || 0;
           break;
         case 'era':
           value = parseFloat(item.ERA || item.era) || 0;
