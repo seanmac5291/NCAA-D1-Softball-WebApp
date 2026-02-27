@@ -56,10 +56,22 @@ class NCAAService {
     try {
       console.log('Fetching rankings from NCAA API');
       const { data } = await ncaaApiClient.get('/rankings/softball/d1');
+      // Normalize each row: trim whitespace from keys, map variant field names
+      const normalized = Array.isArray(data.data) ? data.data.map(item => {
+        const row = {};
+        for (const [k, v] of Object.entries(item)) {
+          row[k.trim()] = v;
+        }
+        // Map either SCHOOL or TEAM -> COLLEGE (frontend expects COLLEGE)
+        if (!row.COLLEGE) row.COLLEGE = row.SCHOOL || row.TEAM || '';
+        // Map either PREVIOUS or PREVIOUS RANK -> PREVIOUS RANK (frontend expects PREVIOUS RANK)
+        if (!row['PREVIOUS RANK']) row['PREVIOUS RANK'] = row.PREVIOUS || '';
+        return row;
+      }) : [];
       return {
         title: data.title || 'NCAA Division I Softball Rankings',
         updated: data.updated || new Date().toLocaleDateString(),
-        data: Array.isArray(data.data) ? data.data : []
+        data: normalized
       };
     } catch (error) {
       console.error('Error fetching rankings from NCAA API:', error.message);
@@ -236,8 +248,11 @@ exports.handler = async (event, _context) => {
     };
   }
   
-  // Parse path for endpoint and parameters
-  const path = event.path.replace('/.netlify/functions/api', '');
+  // Parse path - event.path may be the original /api/* path or the function path
+  const rawPath = event.path || event.rawPath || '';
+  const path = rawPath
+    .replace('/.netlify/functions/api', '')
+    .replace(/^\/api/, '');
   const segments = path.split('/').filter(Boolean);
   
   try {

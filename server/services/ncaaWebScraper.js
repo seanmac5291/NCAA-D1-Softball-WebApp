@@ -56,14 +56,16 @@ class NCAAWebScraperService {
     try {
       console.log('Fetching rankings from NCAA API');
       const { data } = await ncaaApiClient.get('/rankings/softball/d1');
-      // Normalize each row: trim whitespace from keys, and map TEAM -> COLLEGE
+      // Normalize each row: trim whitespace from keys, map variant field names
       const normalized = Array.isArray(data.data) ? data.data.map(item => {
         const row = {};
         for (const [k, v] of Object.entries(item)) {
           row[k.trim()] = v;
         }
-        // Frontend expects COLLEGE; API now returns TEAM
-        if (!row.COLLEGE && row.TEAM) row.COLLEGE = row.TEAM;
+        // Map either SCHOOL or TEAM -> COLLEGE (frontend expects COLLEGE)
+        if (!row.COLLEGE) row.COLLEGE = row.SCHOOL || row.TEAM || '';
+        // Map either PREVIOUS or PREVIOUS RANK -> PREVIOUS RANK (frontend expects PREVIOUS RANK)
+        if (!row['PREVIOUS RANK']) row['PREVIOUS RANK'] = row.PREVIOUS || '';
         return row;
       }) : [];
       return {
