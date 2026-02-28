@@ -28,7 +28,11 @@ const Scoreboard = ({ games, onDateChange }) => {
   };
 
   if (!games) {
-    return <div className="loading">Loading games...</div>;
+    return (
+      <div className="loading" role="status" aria-live="polite">
+        Loading games...
+      </div>
+    );
   }
 
   // Ensure games.games is always an array
@@ -38,23 +42,33 @@ const Scoreboard = ({ games, onDateChange }) => {
     <div className="scoreboard">
       <h2>{games.title || 'NCAA Softball Scoreboard'}</h2>
 
-      <div className="date-select">
-        <button onClick={handleToday} className="today-button">Today</button>
+      <div className="date-select" role="group" aria-labelledby="date-selection-heading">
+        <h3 id="date-selection-heading" className="visually-hidden">Select Game Date</h3>
+        <button onClick={handleToday} className="today-button" aria-describedby="current-date">
+          Today
+        </button>
+        <label htmlFor="game-date" className="visually-hidden">
+          Select date for games
+        </label>
         <input
+          id="game-date"
           type="date"
           value={selectedDate}
           onChange={handleDateChange}
+          aria-describedby="current-date"
         />
       </div>
 
-      <div className="display-date">
+      <div id="current-date" className="display-date" aria-live="polite">
         <strong>Date:</strong> {games.date || new Date().toLocaleDateString()}
       </div>
 
       {gamesList.length === 0 ? (
-        <div className="no-games">No games scheduled for this date.</div>
+        <div className="no-games" role="status">
+          No games scheduled for this date.
+        </div>
       ) : (
-        <div className="games-grid">
+        <div className="games-grid" role="list" aria-label="Game scores and status">
           {gamesList.map((game) => {
             // Ensure game has all required properties with defaults
             const safeGame = {
@@ -78,20 +92,25 @@ const Scoreboard = ({ games, onDateChange }) => {
             };
             
             return (
-              <div key={safeGame.id} className="game-card">
-                <div className="game-status">
-                  <span className={`status-indicator ${safeGame.gameState}`}></span>
+              <div 
+                key={safeGame.id} 
+                className="game-card" 
+                role="listitem"
+                aria-label={`${safeGame.away.names.short} ${safeGame.away.score}, ${safeGame.home.names.short} ${safeGame.home.score}, ${safeGame.currentPeriod || 'Scheduled'}`}
+              >
+                <div className="game-status" role="status" aria-live="polite">
+                  <span className={`status-indicator ${safeGame.gameState}`} aria-hidden="true"></span>
                   <span className="status-text">{safeGame.currentPeriod}</span>
                 </div>
 
-                <div className="teams-container">
-                  <div className="team away">
+                <div className="teams-container" role="group" aria-label="Team scores">
+                  <div className="team away" role="group" aria-label={`Away team: ${safeGame.away.names.short}`}>
                     <span className="team-name">{safeGame.away.names.short}</span>
-                    <span className="team-score">{safeGame.away.score}</span>
+                    <span className="team-score" aria-label={`Score: ${safeGame.away.score}`}>{safeGame.away.score}</span>
                   </div>
-                  <div className="team home">
+                  <div className="team home" role="group" aria-label={`Home team: ${safeGame.home.names.short}`}>
                     <span className="team-name">{safeGame.home.names.short}</span>
-                    <span className="team-score">{safeGame.home.score}</span>
+                    <span className="team-score" aria-label={`Score: ${safeGame.home.score}`}>{safeGame.home.score}</span>
                   </div>
                 </div>
               </div>

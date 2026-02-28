@@ -67,6 +67,18 @@
   font-weight: bold;
 }
 
+.category-tab:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--primary-color);
+}
+
+.category-tab:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
 .category-title {
   text-align: center;
   margin: 20px 0;

@@ -100,6 +100,10 @@ function App() {
     try {
       return (
         <div className="app-container">
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
+          
           <header className="app-header">
             <h1>NCAA D1 College Softball Stats & Rankings</h1>
             <p className="data-update-info">
@@ -107,18 +111,30 @@ function App() {
             </p>
           </header>
 
-          <nav className="app-navigation">
+          <nav className="app-navigation" role="navigation" aria-label="Main navigation">
             <ul>
               <li className={activeTab === 'rankings' ? 'active' : ''}>
-                <button onClick={() => setActiveTab('rankings')}>Rankings</button>
+                <button 
+                  onClick={() => setActiveTab('rankings')}
+                  aria-pressed={activeTab === 'rankings'}
+                  aria-controls="main-content"
+                >
+                  Rankings
+                </button>
               </li>
               <li className={activeTab === 'stats' ? 'active' : ''}>
-                <button onClick={() => setActiveTab('stats')}>Stat Leaders</button>
+                <button 
+                  onClick={() => setActiveTab('stats')}
+                  aria-pressed={activeTab === 'stats'}
+                  aria-controls="main-content"
+                >
+                  Stat Leaders
+                </button>
               </li>
             </ul>
           </nav>
 
-          <main className="app-content">
+          <main id="main-content" className="app-content">
             {activeTab === 'rankings' && (
               <div className="section-container">
                 <TeamRankings rankings={rankings || { data: [] }} />
@@ -136,7 +152,7 @@ function App() {
             )}
           </main>
 
-          <footer className="app-footer">
+          <footer className="app-footer" role="contentinfo">
             <p>&copy; {new Date().getFullYear()} NCAA D1 College Softball Stats & Rankings | Data Sources: NCAA </p>
           </footer>
         </div>
@@ -154,15 +170,19 @@ function App() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className="loading-container" role="status" aria-live="polite">
+        <div className="spinner" aria-hidden="true"></div>
         <p>Loading NCAA D1 College Softball data...</p>
       </div>
     );
   }
 
   if (error) {
-    return <div className="error-container">{error}</div>;
+    return (
+      <div className="error-container" role="alert" aria-live="assertive">
+        {error}
+      </div>
+    );
   }
 
   return renderContent();

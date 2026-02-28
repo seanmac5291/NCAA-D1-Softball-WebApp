@@ -41,13 +41,17 @@ const StatLeaders = ({ statData, activeCategory, onCategoryChange }) => {
   const renderCategoryTabs = () => (
     <div className="category-sections">
       <div className="category-section">
-        <h4 className="section-title">Batting Stats</h4>
-        <div className="category-tabs">
+        <h3 className="section-title">Batting Stats</h3>
+        <div className="category-tabs" role="tablist" aria-label="Batting statistics categories">
           {battingCategories.map(category => (
             <button 
               key={category.id}
               className={`category-tab ${activeCategory === category.id ? 'active' : ''}`}
               onClick={() => handleCategoryChange(category.id)}
+              role="tab"
+              aria-selected={activeCategory === category.id}
+              aria-controls="stats-content"
+              id={`tab-${category.id}`}
             >
               {category.label}
             </button>
@@ -56,13 +60,17 @@ const StatLeaders = ({ statData, activeCategory, onCategoryChange }) => {
       </div>
       
       <div className="category-section">
-        <h4 className="section-title">Pitching Stats</h4>
-        <div className="category-tabs">
+        <h3 className="section-title">Pitching Stats</h3>
+        <div className="category-tabs" role="tablist" aria-label="Pitching statistics categories">
           {pitchingCategories.map(category => (
             <button 
               key={category.id}
               className={`category-tab ${activeCategory === category.id ? 'active' : ''}`}
               onClick={() => handleCategoryChange(category.id)}
+              role="tab"
+              aria-selected={activeCategory === category.id}
+              aria-controls="stats-content"
+              id={`tab-${category.id}`}
             >
               {category.label}
             </button>
@@ -109,63 +117,63 @@ const StatLeaders = ({ statData, activeCategory, onCategoryChange }) => {
       case 'batting':
         return (
           <>
-            <th>G</th>
-            <th>AB</th>
-            <th>H</th>
+            <th scope="col">G</th>
+            <th scope="col">AB</th>
+            <th scope="col">H</th>
           </>
         );
       case 'hits':
         return (
           <>
-            <th>G</th>
+            <th scope="col">G</th>
             {/* Removed AVG column for Hits */}
           </>
         );
       case 'homeRuns':
         return (
           <>
-            <th>G</th>
-            <th>HR/G</th>
+            <th scope="col">G</th>
+            <th scope="col">HR/G</th>
           </>
         );
       case 'obp':
         return (
           <>
-            <th>G</th>
-            <th>AB</th>
-            <th>H</th>
-            <th>BB</th>
-            <th>HBP</th>
+            <th scope="col">G</th>
+            <th scope="col">AB</th>
+            <th scope="col">H</th>
+            <th scope="col">BB</th>
+            <th scope="col">HBP</th>
           </>
         );
       case 'slg':
         return (
           <>
-            <th>G</th>
-            <th>AB</th>
-            <th>TB</th>
+            <th scope="col">G</th>
+            <th scope="col">AB</th>
+            <th scope="col">TB</th>
           </>
         );
       case 'era':
         return (
           <>
-            <th>APP</th>
-            <th>IP</th>
-            <th>ER</th>
+            <th scope="col">APP</th>
+            <th scope="col">IP</th>
+            <th scope="col">ER</th>
           </>
         );
       case 'strikeoutsPerSeven':
         return (
           <>
-            <th>APP</th>
-            <th>IP</th>
-            <th>SO</th>
+            <th scope="col">APP</th>
+            <th scope="col">IP</th>
+            <th scope="col">SO</th>
           </>
         );
       case 'strikeoutsTotal':
         return (
           <>
-            <th>APP</th>
+            <th scope="col">APP</th>
             {/* removed IP and K/7 for Strikeouts */}
           </>
         );
@@ -248,53 +256,56 @@ const StatLeaders = ({ statData, activeCategory, onCategoryChange }) => {
   };
 
   return (
-    <div className="stat-leaders">
-      <h2>D1 College Softball Statistical Leaders</h2>
-      
+    <div className="stat-leaders">      
       {/* Always show category tabs */}
       {renderCategoryTabs()}
       
-      {isLoading ? (
-        <div className="loading">Loading statistical leaders...</div>
-      ) : (
-        <>
-          <h3 className="category-title">{statData.category}</h3>
-          
-          <div className="stats-table-container">
-            <table className="stats-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Player</th>
-                  <th>Team</th>
-                  <th>Class</th>
-                  <th>Position</th>
-                  {renderAdditionalStatHeaders()}
-                  <th>{getColumnLabel()}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {statData.leaders.map((leader) => (
-                  <tr key={`${leader.rank}-${leader.player.name}-${leader.team.name}`}>
-                    <td className="rank">{leader.rank}</td>
-                    <td>{leader.player.name}</td>
-                    <td>{leader.team.name}</td>
-                    <td>{leader.player.classYear || '-'}</td>
-                    <td>{leader.player.position}</td>
-                    {renderAdditionalStatValues(leader)}
-                    <td className="stat-value">{formatValue(leader.value, activeCategory)}</td>
+      <div id="stats-content" role="tabpanel" aria-labelledby={`tab-${activeCategory}`}>
+        {isLoading ? (
+          <div className="loading" role="status" aria-live="polite">
+            Loading statistical leaders...
+          </div>
+        ) : (
+          <>
+            <h2 className="category-title">{statData.category}</h2>
+            
+            <div className="stats-table-container">
+              <table className="stats-table" role="table" aria-label={`${statData.category} statistical leaders`}>
+                <caption>Top NCAA Division I Softball players in {statData.category}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Player</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Position</th>
+                    {renderAdditionalStatHeaders()}
+                    <th scope="col">{getColumnLabel()}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="update-info">
-            <p>Data Source: NCAA.com</p>
-            <p>Last Updated: {statData.updated || new Date().toLocaleDateString()}</p>
-          </div>
-        </>
-      )}
+                </thead>
+                <tbody>
+                  {statData.leaders.map((leader) => (
+                    <tr key={`${leader.rank}-${leader.player.name}-${leader.team.name}`}>
+                      <td className="rank">{leader.rank}</td>
+                      <td>{leader.player.name}</td>
+                      <td>{leader.team.name}</td>
+                      <td>{leader.player.classYear || '-'}</td>
+                      <td>{leader.player.position}</td>
+                      {renderAdditionalStatValues(leader)}
+                      <td className="stat-value">{formatValue(leader.value, activeCategory)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="update-info">
+              <p>Data Source: NCAA.com</p>
+              <p>Last Updated: {statData.updated || new Date().toLocaleDateString()}</p>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

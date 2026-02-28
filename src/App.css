@@ -18,6 +18,38 @@
   --light-shadow-color: rgba(107, 178, 255, 0.1); /* Subtle light blue shadow */
 }
 
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  font-weight: 500;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Visually hidden class for screen readers */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -103,6 +135,18 @@ body {
   background-color: var(--hover-color);
   color: var(--primary-color);
   border-bottom-color: var(--primary-color); /* Indicate hover on border as well */
+}
+
+.app-navigation button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  background-color: var(--hover-color);
+  color: var(--primary-color);
+}
+
+.app-navigation button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 /* Content Sections */
