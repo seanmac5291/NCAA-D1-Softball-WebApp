@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { fetchTeamRankings, fetchStatLeaders } from './services/softballAPI';
 import TeamRankings from './components/TeamRankings';
@@ -11,8 +11,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('rankings'); // Default to rankings tab
-  const initialStatCategoryRef = useRef(activeStatCategory);
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,9 +27,9 @@ function App() {
           setError('Failed to load rankings. Please try again later.');
         }
 
-        // Fetch initial stats data
+        // Fetch initial stats data (default category: batting)
         try {
-          const initialStatData = await fetchStatLeaders(initialStatCategoryRef.current);
+          const initialStatData = await fetchStatLeaders('batting');
           console.log('Stats data received');
           setStatData(initialStatData);
         } catch (statsError) {
@@ -48,7 +46,7 @@ function App() {
     };
 
     fetchData();
-  }, [activeStatCategory]);
+  }, []); // Only run on mount — category changes handled by handleCategoryChange
 
   // Handle stat category change
   const handleCategoryChange = async (category) => {

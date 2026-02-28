@@ -80,7 +80,7 @@ class NCAAService {
   }
 
   /**
-   * Fetch statistics data using NCAA API
+   * Fetch statistics data using NCAA API (with pagination)
    */
   async fetchStats(category) {
     const endpoint = this.statsUrls[category];
@@ -88,8 +88,23 @@ class NCAAService {
     await this.respectRateLimit();
     try {
       console.log(`Fetching ${category} stats from NCAA API`);
-      const { data } = await ncaaApiClient.get(endpoint);
-      return this.formatStatsData(data, category);
+      // Fetch first page
+      const initialResp = await ncaaApiClient.get(endpoint);
+      const apiData = initialResp.data;
+      let allStats = Array.isArray(apiData.data) ? [...apiData.data] : [];
+      const totalPages = apiData.pages || 1;
+      // Fetch subsequent pages if any
+      for (let p = 2; p <= totalPages; p++) {
+        await this.respectRateLimit();
+        console.log(`Fetching page ${p} for ${category}`);
+        const pageResp = await ncaaApiClient.get(`${endpoint}/p${p}`);
+        if (Array.isArray(pageResp.data.data)) {
+          allStats = allStats.concat(pageResp.data.data);
+        }
+      }
+      // Replace data with combined stats
+      apiData.data = allStats;
+      return this.formatStatsData(apiData, category);
     } catch (error) {
       console.error(`Error fetching ${category} stats from NCAA API:`, error.message);
       throw error;
