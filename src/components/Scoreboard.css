@@ -66,6 +66,34 @@
   color: var(--card-background);
 }
 
+.date-button:focus,
+.today-button:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.date-button:focus-visible,
+.today-button:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.today-button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.today-button:hover {
+  background-color: #357abd;
+}
+
 .date-input-container {
   display: flex;
   align-items: center;
@@ -86,6 +114,17 @@
   font-family: inherit;
   background-color: rgba(0, 0, 0, 0.2);
   color: var(--text-color);
+}
+
+.date-input-container input:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+  border-color: #4a90e2;
+}
+
+.date-input-container input:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
 }
 
 .display-date {
